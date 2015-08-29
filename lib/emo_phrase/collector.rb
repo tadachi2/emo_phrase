@@ -23,7 +23,7 @@ class Collector
     @db.file = file
   end
 
-  def twitter_list=(xlsx_list)
+  def twitter_id_list=(xlsx_file)
     @twitter_ids = do_parse_twitter_id_xlsx(xlsx_file)
   end
 
@@ -32,15 +32,15 @@ class Collector
   end
 
   def twitter_access_backward(user_id)
-    do_twtter_access(user_id, "backward")
+    do_twitter_access(user_id, "backward")
   end
 
   private  #-----------------------------------------------------# private
 
   def do_parse_twitter_id_xlsx(xlsx_file)
     hash = {
-       'sheet' => 'twitter_id_kabu',
-#       'sheet' => 'twitter_id_kabu_test',
+#       'sheet' => 'twitter_id_kabu',
+       'sheet' => 'twitter_id_kabu_test',
         'id'=> 1, 'name' => 2, "remarks" => 3,
         'title_line' => 1
     }
