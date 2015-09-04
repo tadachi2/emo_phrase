@@ -60,9 +60,14 @@ class Database
           "screen_name TEXT NOT NULL,", 
           "user_name   TEXT NOT NULL,", 
           "text        TEXT NOT NULL", 
-          ');'
+          ');',
+          "CREATE INDEX IF NOT EXISTS",
+          "tweet_id_index",
+          'ON tweet_table(tweet_id);'
     ].join(" ")
-    @db.execute(sql)
+    @db.execute_batch(sql)
+
+
   end
 
   def do_register_tweet_table(model)
@@ -74,10 +79,14 @@ class Database
       "VALUES (:created_at , :tweet_id, :user_id, :screen_name, :user_name, :text)\;"
     ].join(" ")
 
-    model.each do |m|
-      select_sql = "SELECT id FROM tweet_table WHERE tweet_id = \'%{tweet_id}\'\;" % { tweet_id: m['tweet_id'] }
-      model.delete m unless @db.execute(select_sql).length == 0
+puts model.length
+    i = 0
+    while i < model.length
+      select_sql = "SELECT id FROM tweet_table WHERE tweet_id = \'%{tweet_id}\'\;" % { tweet_id: model[i]['tweet_id'] }
+
+      @db.execute(select_sql).length == 0 ? (i += 1) :  model.delete_at(i)
     end
+puts model.length
 
     @db.transaction do
       model.each do |m|
