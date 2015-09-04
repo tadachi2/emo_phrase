@@ -17,12 +17,14 @@ class Tweet
   COUNT_LIMIT = 16
 #  COUNT_LIMIT = 1
   SLEEP_SEC   = 8
+  SESSION_REG = 8
 
   def initialize
-    @client     = nil
-    @url        = "" 
-    @tweets     = []
-    @user_count = 0
+    @client       = nil
+    @url          = "" 
+    @tweets       = []
+    @session_reg  = 0
+    @user_count   = 0
   end
 
   def access(id)
@@ -68,6 +70,10 @@ class Tweet
   def do_access_backward(id)
     return if @client.nil?
 
+    if @session_reg % SESSION_REG == 0 
+      @client = do_setup_config
+    end
+
     max_id = 0
     COUNT_LIMIT.times do |c|
 puts c
@@ -80,9 +86,10 @@ puts c
       @tweets.push tweet_ary
       break if tweet_ary.length == 0
       max_id = tweet_ary[-1].id - 1
-      
+     
       sleep SLEEP_SEC
     end
+    @session_reg += 1
   end
 
   def do_parse_json
@@ -101,6 +108,7 @@ puts c
         ary[ t.id ] =  hash
       end
     end
+    @tweets = []
     ary.values
   end
 

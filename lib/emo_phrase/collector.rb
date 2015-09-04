@@ -13,10 +13,13 @@ require "emo_phrase/tweet"
 module EmoPhrase
 class Collector
 
+  attr_accessor :start_row
+
   def initialize
     @db           = EmoPhrase::Database.new
     @xlsx         = EmoPhrase::Xlsx.new
     @twitter_ids  = nil
+    @start_row    = 0
   end
 
   def db=(file)
@@ -28,7 +31,7 @@ class Collector
   end
 
   def twitter_access(user_id)
-    dp_twitter_access(user_id)
+    do_twitter_access(user_id)
   end
 
   def twitter_access_backward(user_id)
@@ -64,15 +67,13 @@ class Collector
 
     ept = do_set_twitter_api_parameter(api_params)
 
-list_no = 12
-cnt = 0
+    cnt = 0
     @twitter_ids.each do |id|
-cnt += 1
-next if list_no > cnt
+      cnt += 1
+      next if @start_row > cnt
 puts id
       type.nil? ? ept.access(id) : ept.access_backward(id)
       result = ept.result_array
-#p result
       @db.register_twitter(result)
     end
   end
