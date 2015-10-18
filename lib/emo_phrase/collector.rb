@@ -13,13 +13,14 @@ require "emo_phrase/tweet"
 module EmoPhrase
 class Collector
 
-  attr_accessor :start_row
+  attr_accessor :start_row, :end_row
 
   def initialize
     @db           = EmoPhrase::Database.new
     @xlsx         = EmoPhrase::Xlsx.new
     @twitter_ids  = nil
     @start_row    = 0
+    @end_row      = 1048576
   end
 
   def db=(file)
@@ -42,8 +43,8 @@ class Collector
 
   def do_parse_twitter_id_xlsx(xlsx_file)
     hash = {
-#       'sheet' => 'twitter_id_kabu',
-       'sheet' => 'twitter_id_kabu_test',
+       'sheet' => 'twitter_id_kabu',
+#       'sheet' => 'twitter_id_kabu_test',
         'id'=> 1, 'name' => 2, "remarks" => 3,
         'title_line' => 1
     }
@@ -70,7 +71,7 @@ class Collector
     cnt = 0
     @twitter_ids.each do |id|
       cnt += 1
-      next if @start_row > cnt
+      next if @end_row < cnt || @start_row > cnt
 puts id
       type.nil? ? ept.access(id) : ept.access_backward(id)
       result = ept.result_array

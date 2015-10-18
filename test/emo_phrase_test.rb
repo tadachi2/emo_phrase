@@ -22,5 +22,6 @@ class EmoPhraseTest < Minitest::Test
   def test_twitter_access
     user_id = "tadachi2_"
     @epc.twitter_access_backward(user_id)
+
   end
 end
