@@ -11,11 +11,9 @@ module EmoPhrase
 class Tweet
 
   attr_accessor :id, :consumer_key, :consumer_secret,
-                :access_token, :access_token_secret
+                :access_token, :access_token_secret, :count_limit
   
   TWEETS_NUM  = 200
-  COUNT_LIMIT = 16
-#  COUNT_LIMIT = 1
   SLEEP_SEC   = 8
   SESSION_REG = 8
 
@@ -23,6 +21,7 @@ class Tweet
     @client       = nil
     @url          = "" 
     @tweets       = []
+    @count_limit  = 2  # max 16
     @session_reg  = 0
     @user_count   = 0
   end
@@ -37,6 +36,12 @@ class Tweet
     do_setup_config if @client.nil?
 
     do_access_backward(id) if id && @client
+  end
+
+  def search_keyword(keyword)
+    do_setup_config if @client.nil?
+
+    do_search(keyword) if keyword && @client
   end
 
   def result_array
@@ -75,7 +80,7 @@ class Tweet
     end
 
     max_id = 0
-    COUNT_LIMIT.times do |c|
+    @count_limit.times do |c|
 puts c
       if max_id == 0
         tweet_ary = @client.user_timeline(id, { count: TWEETS_NUM })
@@ -91,6 +96,12 @@ puts c
     end
     @session_reg += 1
   end
+
+  def do_search(keyword)
+    tweet_ary = @client.search(id, { count: 100 })
+
+  end
+
 
   def do_parse_json
     ary = {}
