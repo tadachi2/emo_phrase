@@ -11,7 +11,7 @@ module EmoPhrase
 class Tweet
 
   attr_accessor :id, :consumer_key, :consumer_secret,
-                :access_token, :access_token_secret, :count_limit
+                :access_token, :access_token_secret, :cycle_limit
   
   TWEETS_NUM  = 200
   SLEEP_SEC   = 8
@@ -21,7 +21,7 @@ class Tweet
     @client       = nil
     @url          = "" 
     @tweets       = []
-    @count_limit  = 2  # max 16
+    @cycle_limit  = 1  # max 16
     @session_reg  = 0
     @user_count   = 0
   end
@@ -80,7 +80,7 @@ class Tweet
     end
 
     max_id = 0
-    @count_limit.times do |c|
+    @cycle_limit.times do |c|
 puts c
       if max_id == 0
         tweet_ary = @client.user_timeline(id, { count: TWEETS_NUM })

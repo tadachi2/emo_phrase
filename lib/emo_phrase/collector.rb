@@ -13,14 +13,15 @@ require "emo_phrase/tweet"
 module EmoPhrase
 class Collector
 
-  attr_accessor :start_row, :end_row
+  attr_accessor :start_row, :end_row, :twitter_cycle_limit
 
   def initialize
     @db           = EmoPhrase::Database.new
     @xlsx         = EmoPhrase::Xlsx.new
-    @twitter_ids  = nil
-    @start_row    = 0
-    @end_row      = 1048576
+    @twitter_ids         = nil
+    @start_row           = 0
+    @end_row             = 1048576
+    @twitter_cycle_limit = 1
   end
 
   def db=(file)
@@ -67,7 +68,7 @@ class Collector
     api_params = @db.twitter_api_params(user_id)
 
     ept = do_set_twitter_api_parameter(api_params)
-
+    ept.cycle_limit = @twitter_cycle_limit
     cnt = 0
     @twitter_ids.each do |id|
       cnt += 1

@@ -22,7 +22,7 @@ epc = ::EmoPhrase::Collector.new
 epc.db = db_file
 epc.twitter_id_list = twitter_id_file
 
-#epc.count_linit = 4 #=> max 16 = 3200 tweets
+epc.twitter_cycle_limit = 6 #=> max 16 = 3200 tweets
 #epc.start_row = 3
 #epc.end_row   = 6
 epc.twitter_access_backward("tadachi2_")
